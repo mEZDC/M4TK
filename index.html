@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>M4TK — Coming Soon</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Inter:wght@200;300;400;500&family=Syncopate:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-color: #000002;
+            --text-main: #ffffff;
+            --text-muted: #b0b5c5;
+            --accent-gold: #f3d082;
+            --gold-glow: rgba(243, 208, 130, 0.6);
+            --font-brand: 'Syncopate', sans-serif;
+            --font-serif: 'Cormorant Garamond', serif;
+            --font-sans: 'Inter', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: var(--font-sans);
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            padding: 3rem 1.5rem;
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+            position: relative;
+        }
+
+        /* Full Space Starfield Canvas */
+        #space-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Subtle Ambient Dark Edge Vignette */
+        .vignette-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, transparent 50%, rgba(0, 0, 2, 0.85) 100%);
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* Header / Brand */
+        header {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+        }
+
+        .logo {
+            font-family: var(--font-brand);
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: 0.45em;
+            color: var(--text-main);
+            text-transform: uppercase;
+            text-shadow: 0 0 25px rgba(255, 255, 255, 0.4);
+        }
+
+        .logo span {
+            color: var(--accent-gold);
+            text-shadow: 0 0 20px var(--gold-glow);
+        }
+
+        /* Main Section Container — Frameless & Directly Floating */
+        main {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            max-width: 950px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: transparent;
+            border: none;
+            box-shadow: none;
+            padding: 0;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-family: var(--font-sans);
+            font-size: 0.8rem;
+            letter-spacing: 0.35em;
+            text-transform: uppercase;
+            color: var(--accent-gold);
+            margin-bottom: 2rem;
+            border: 1px solid rgba(243, 208, 130, 0.45);
+            padding: 0.6rem 1.6rem;
+            border-radius: 50px;
+            background: rgba(243, 208, 130, 0.08);
+            box-shadow: 0 0 30px rgba(243, 208, 130, 0.2);
+            backdrop-filter: blur(4px);
+        }
+
+        .badge .emoji {
+            font-size: 1rem;
+        }
+
+        h1 {
+            font-family: var(--font-serif);
+            font-size: clamp(2.6rem, 6vw, 4.5rem);
+            font-weight: 300;
+            letter-spacing: -0.01em;
+            line-height: 1.15;
+            color: #ffffff;
+            margin-bottom: 1.2rem;
+            text-shadow: 0 0 40px rgba(0, 0, 0, 0.9), 0 0 20px rgba(255, 255, 255, 0.3);
+        }
+
+        h1 em {
+            font-style: italic;
+            color: var(--accent-gold);
+            font-weight: 400;
+            text-shadow: 0 0 30px var(--gold-glow);
+        }
+
+        p.subtitle {
+            font-size: 0.95rem;
+            font-weight: 300;
+            color: var(--text-muted);
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            margin-bottom: 3.5rem;
+            text-shadow: 0 0 20px rgba(0, 0, 0, 0.9);
+        }
+
+        /* Minimalist Floating Countdown — Enlarged & Gold */
+        .countdown {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 2.5rem;
+            width: 100%;
+        }
+
+        .time-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 90px;
+        }
+
+        .number {
+            font-family: var(--font-serif);
+            font-size: clamp(3.8rem, 8.5vw, 6rem); /* تم تكبير الحجم بشكل ملحوظ */
+            font-weight: 400;
+            color: var(--accent-gold); /* تغيير اللون إلى الذهبي */
+            line-height: 1;
+            text-shadow: 0 0 35px rgba(0, 0, 0, 0.9), 0 0 25px var(--gold-glow); /* توهج ذهبي فخم */
+        }
+
+        .label {
+            font-size: 0.75rem;
+            letter-spacing: 0.4em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-top: 0.8rem;
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.9);
+        }
+
+        .divider {
+            font-family: var(--font-serif);
+            font-size: 3rem;
+            color: rgba(243, 208, 130, 0.7);
+            font-weight: 300;
+            margin-top: -1.6rem;
+            text-shadow: 0 0 20px var(--gold-glow);
+        }
+
+        /* Footer */
+        footer {
+            position: relative;
+            z-index: 2;
+            font-size: 0.7rem;
+            letter-spacing: 0.25em;
+            color: rgba(255, 255, 255, 0.5);
+            text-transform: uppercase;
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.9);
+        }
+
+        @media (max-width: 600px) {
+            .countdown {
+                gap: 1rem;
+            }
+            .time-box {
+                min-width: 60px;
+            }
+            .divider {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Starfield Canvas -->
+    <canvas id="space-canvas"></canvas>
+    <div class="vignette-overlay"></div>
+
+    <!-- Header / Brand -->
+    <header>
+        <div class="logo">M4TK<span>.</span></div>
+    </header>
+
+    <!-- Main Section (Frameless) -->
+    <main>
+        <div class="badge">
+            <span class="emoji">⏳</span>
+            <span>COMING SOON</span>
+        </div>
+
+        <h1>Project Announcement <em>Is Near</em></h1>
+        <p class="subtitle">Something extraordinary is coming</p>
+
+        <!-- Countdown -->
+        <div class="countdown">
+            <div class="time-box">
+                <span class="number" id="days">00</span>
+                <span class="label">Days</span>
+            </div>
+            <div class="divider">:</div>
+            <div class="time-box">
+                <span class="number" id="hours">00</span>
+                <span class="label">Hours</span>
+            </div>
+            <div class="divider">:</div>
+            <div class="time-box">
+                <span class="number" id="minutes">00</span>
+                <span class="label">Mins</span>
+            </div>
+            <div class="divider">:</div>
+            <div class="time-box">
+                <span class="number" id="seconds">00</span>
+                <span class="label">Secs</span>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        &copy; 2026 M4TK. All rights reserved.
+    </footer>
+
+    <!-- Stars & Shooting Stars Simulation Engine -->
+    <script>
+        const canvas = document.getElementById('space-canvas');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        // Dynamic Starfield with Motion
+        const stars = [];
+        const numStars = 500;
+        for (let i = 0; i < numStars; i++) {
+            stars.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                radius: Math.random() * 1.8 + 0.3,
+                alpha: Math.random(),
+                speed: Math.random() * 0.04 + 0.015,
+                driftX: (Math.random() - 0.5) * 0.4,
+                driftY: (Math.random() - 0.5) * 0.2
+            });
+        }
+
+        // Fast Shooting Stars
+        const shootingStars = [];
+        function createShootingStar() {
+            if (Math.random() < 0.07 && shootingStars.length < 5) {
+                shootingStars.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * (canvas.height * 0.5),
+                    length: Math.random() * 120 + 60,
+                    speed: Math.random() * 20 + 12,
+                    angle: Math.PI / 4,
+                    alpha: 1
+                });
+            }
+        }
+
+        function drawSpace() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // 1. Draw moving & twinkling Stars
+            stars.forEach(star => {
+                star.alpha += star.speed;
+                if (star.alpha > 1 || star.alpha < 0) {
+                    star.speed = -star.speed;
+                }
+                star.x += star.driftX;
+                star.y += star.driftY;
+
+                if (star.x < 0) star.x = canvas.width;
+                if (star.x > canvas.width) star.x = 0;
+                if (star.y < 0) star.y = canvas.height;
+                if (star.y > canvas.height) star.y = 0;
+
+                ctx.beginPath();
+                ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(255, 255, 255, ${Math.abs(star.alpha)})`;
+                ctx.fill();
+            });
+
+            // 2. Draw Shooting Stars
+            createShootingStar();
+            for (let i = shootingStars.length - 1; i >= 0; i--) {
+                const ss = shootingStars[i];
+                const endX = ss.x + Math.cos(ss.angle) * ss.length;
+                const endY = ss.y + Math.sin(ss.angle) * ss.length;
+
+                const grad = ctx.createLinearGradient(ss.x, ss.y, endX, endY);
+                grad.addColorStop(0, `rgba(255, 255, 255, ${ss.alpha})`);
+                grad.addColorStop(1, 'transparent');
+
+                ctx.beginPath();
+                ctx.moveTo(ss.x, ss.y);
+                ctx.lineTo(endX, endY);
+                ctx.strokeStyle = grad;
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                ss.x += Math.cos(ss.angle) * ss.speed;
+                ss.y += Math.sin(ss.angle) * ss.speed;
+                ss.alpha -= 0.025;
+
+                if (ss.alpha <= 0) {
+                    shootingStars.splice(i, 1);
+                }
+            }
+
+            requestAnimationFrame(drawSpace);
+        }
+        drawSpace();
+
+        // Countdown Logic (Target: Jan 1, 2027)
+        const targetDate = new Date('January 1, 2027 00:00:00').getTime();
+
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const difference = targetDate - now;
+
+            if (difference > 0) {
+                const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+                document.getElementById('days').innerText = days.toString().padStart(2, '0');
+                document.getElementById('hours').innerText = hours.toString().padStart(2, '0');
+                document.getElementById('minutes').innerText = minutes.toString().padStart(2, '0');
+                document.getElementById('seconds').innerText = seconds.toString().padStart(2, '0');
+            } else {
+                document.querySelector('.countdown').innerHTML = '<h2 style="font-family: var(--font-serif); font-size: 2.5rem; color: var(--accent-gold);">NOW AVAILABLE</h2>';
+            }
+        }
+
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
+    </script>
+</body>
+</html>
